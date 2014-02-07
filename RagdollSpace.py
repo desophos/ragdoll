@@ -17,7 +17,9 @@ class RagdollSpace(pymunk.Space):
     
     def remove_bullet(self, bullet):
         self.bullets.remove(bullet)
-        self.remove(bullet.body.constraints, bullet.body.shapes, bullet.body)
+        self.remove(*bullet.body.constraints)
+        self.remove(*bullet.body.shapes)
+        self.remove(bullet.body)
     
     def add_character(self, c):
         self.characters.append(c)
@@ -48,7 +50,9 @@ class RagdollSpace(pymunk.Space):
                 if character.targeter:
                     self.remove(character.targeter)
         
-        for c in body.constraints:
-            for b in character.bodies:
-                print c in b.constraints
-        self.remove(body.constraints, body.shapes, body)
+        #for c in body.constraints:
+        #    for b in character.bodies:
+        #        print c in b.constraints
+        self.remove(*body.constraints)
+        self.remove(*body.shapes)
+        self.remove(body)
