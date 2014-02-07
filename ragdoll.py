@@ -169,7 +169,7 @@ while True:
     # blit background
     screen.blit(background, (0, 0))
     # draw stuff
-    pygame_util.draw_space(screen, space)
+    pygame_util.draw(screen, space)
     # update physics
     space.step(STEP_TIME)
     # flip display
