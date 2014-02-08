@@ -77,7 +77,7 @@ class Enemy(Character):
         
     def basic_ai(self, space):
         # calculate ideal min_dist, max_dist, and speed
-        min_dist = 100
+        min_dist = 50
         max_dist = 200
         speed = ENEMY_MAX_SPEED
         self.maintain_distance(space.characters, min_dist, max_dist, speed)
