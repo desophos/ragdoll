@@ -20,6 +20,13 @@ class RagdollSpace(pymunk.Space):
         self.remove(*bullet.body.constraints)
         self.remove(*bullet.body.shapes)
         self.remove(bullet.body)
+        
+    def remove_gun(self, c):
+        self.remove([j for j in c.gun.constraints if j in self.constraints])
+        if c.gun.body_shape in self.shapes:
+            self.remove(c.gun.body_shape)
+        if c.gun.body in self.bodies:
+            self.remove(c.gun.body)
     
     def add_character(self, c):
         self.characters.append(c)
@@ -30,11 +37,7 @@ class RagdollSpace(pymunk.Space):
     def remove_character(self, c):
         self.characters.remove(c)
         if c.gun:
-            self.remove([j for j in c.gun.constraints if j in self.constraints])
-            if c.gun.body_shape in self.shapes:
-                self.remove(c.gun.body_shape)
-            if c.gun.body in self.bodies:
-                self.remove(c.gun.body)
+            self.remove_gun(c)
         if c.__class__ == Enemy:
             if c.targeter in self.constraints:
                 self.remove(c.targeter)
@@ -45,7 +48,7 @@ class RagdollSpace(pymunk.Space):
     def remove_character_body_part(self, body, character):
         # if gun hand is removed, remove gun
         if body == character.bodies[character.bodies_enum["LOWER_ARM_L"]] and character.gun:
-            self.remove(character.gun.body.constraints, character.gun.body.shapes, character.gun.body)
+            self.remove_gun(character)
             if character.__class__ == Enemy:
                 if character.targeter:
                     self.remove(character.targeter)
@@ -53,6 +56,9 @@ class RagdollSpace(pymunk.Space):
         #for c in body.constraints:
         #    for b in character.bodies:
         #        print c in b.constraints
+        for i in range(len(character.bodies)):
+            if body == character.bodies[i]:
+                print "removing body", i, "from", character.cid
         self.remove(*body.constraints)
         self.remove(*body.shapes)
         self.remove(body)
