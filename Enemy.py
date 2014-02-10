@@ -86,4 +86,5 @@ class Enemy(Character):
             body_part_name = "HEAD"
             self.target_player(space, body_part_name)
         self.avoid_bullets(space)
-        self.shoot_gun(space)
+        if self.gun:
+            self.shoot_gun(space)

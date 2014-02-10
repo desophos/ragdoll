@@ -16,6 +16,8 @@ from utility import *
 from pymunk import pygame_util
 import pygame
 import pymunk
+from math import fabs
+from time import time
 
 clock = pygame.time.Clock()
 
@@ -39,7 +41,7 @@ me_sprite = pygame.sprite.RenderPlain(me, me.gun) # create sprite group for the 
 num_enemies = 2
 for i in range(num_enemies):
     from random import random
-    pos = (random()*SCREEN_SIZE, random()*SCREEN_SIZE)
+    pos = ( random() * (SCREEN_SIZE - WALL_WIDTH), random() * (SCREEN_SIZE - WALL_WIDTH) )
     space.add_character( Enemy( gun_type="pistol", pos=pos, cid=character_index ) )
     character_index += 1
 
@@ -145,8 +147,6 @@ while True:
 
     # prune a bullet if the bullet is outside the screen or has stopped moving
     for b in space.bullets[:]: # iterate over a copy of the list
-        from math import fabs
-        
         if fabs(b.body.position.x - SCREEN_SIZE) > SCREEN_SIZE or \
            fabs(b.body.position.y - SCREEN_SIZE) > SCREEN_SIZE:
             space.remove_bullet(b)
@@ -163,7 +163,6 @@ while True:
 
     for c in space.characters:
         if c.gun:
-            from time import time
             c.gun.cooldown_timer = time()
     
     # blit background

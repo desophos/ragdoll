@@ -22,11 +22,16 @@ class RagdollSpace(pymunk.Space):
         self.remove(bullet.body)
         
     def remove_gun(self, c):
-        self.remove(*[j for j in c.gun.constraints if j in self.constraints])
+        c.gun = None
         if c.gun.body_shape in self.shapes:
             self.remove(c.gun.body_shape)
         if c.gun.body in self.bodies:
             self.remove(c.gun.body)
+        return [j for j in c.gun.constraints if j in self.constraints]
+            
+    def remove_targeter(self, c):
+        if c.__class__ == Enemy and c.targeter and c.targeter in self.constraints:
+            self.remove(c.targeter)
     
     def add_character(self, c):
         self.characters.append(c)
@@ -35,30 +40,29 @@ class RagdollSpace(pymunk.Space):
             self.add(c.gun.body, c.gun.body_shape, c.gun.constraints)
             
     def remove_character(self, c):
+        constraints_to_remove = set()
         self.characters.remove(c)
+        self.remove_targeter(c)
         if c.gun:
-            self.remove_gun(c)
-        if c.__class__ == Enemy:
-            if c.targeter in self.constraints:
-                self.remove(c.targeter)
-        self.remove(*[j for j in c.joints if j in self.constraints])
+            constraints_to_remove.update(self.remove_gun(c))
+        constraints_to_remove.update([j for j in c.joints if j in self.constraints])
+        self.remove(*constraints_to_remove)
         self.remove(*[s for s in c.body_shapes if s in self.shapes])
         self.remove(*[b for b in c.bodies if b in self.bodies])
             
     def remove_character_body_part(self, body, character):
+        constraints_to_remove = set() # use a set so we don't try to remove the same constraint twice
+        
         # if gun hand is removed, remove gun
         if body == character.bodies[character.bodies_enum["LOWER_ARM_L"]] and character.gun:
-            self.remove_gun(character)
-            if character.__class__ == Enemy:
-                if character.targeter:
-                    self.remove(character.targeter)
+            constraints_to_remove.update(self.remove_gun(character))
+            self.remove_targeter(character)
         
-        #for c in body.constraints:
-        #    for b in character.bodies:
-        #        print c in b.constraints
         for i in range(len(character.bodies)):
             if body == character.bodies[i]:
                 print "removing body", i, "from", character.cid
-        self.remove(*[c for c in body.constraints if c in self.constraints])
+        
+        constraints_to_remove.update([j for j in body.constraints if j in self.constraints])
+        self.remove(*constraints_to_remove)
         self.remove(*[s for s in body.shapes if s in self.shapes])
         self.remove(body)
