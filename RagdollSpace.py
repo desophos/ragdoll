@@ -22,7 +22,7 @@ class RagdollSpace(pymunk.Space):
         self.remove(bullet.body)
         
     def remove_gun(self, c):
-        self.remove([j for j in c.gun.constraints if j in self.constraints])
+        self.remove(*[j for j in c.gun.constraints if j in self.constraints])
         if c.gun.body_shape in self.shapes:
             self.remove(c.gun.body_shape)
         if c.gun.body in self.bodies:
@@ -41,9 +41,9 @@ class RagdollSpace(pymunk.Space):
         if c.__class__ == Enemy:
             if c.targeter in self.constraints:
                 self.remove(c.targeter)
-        self.remove([j for j in c.joints if j in self.constraints],
-                    [s for s in c.body_shapes if s in self.shapes],
-                    [b for b in c.bodies if b in self.bodies])
+        self.remove(*[j for j in c.joints if j in self.constraints])
+        self.remove(*[s for s in c.body_shapes if s in self.shapes])
+        self.remove(*[b for b in c.bodies if b in self.bodies])
             
     def remove_character_body_part(self, body, character):
         # if gun hand is removed, remove gun
@@ -59,6 +59,6 @@ class RagdollSpace(pymunk.Space):
         for i in range(len(character.bodies)):
             if body == character.bodies[i]:
                 print "removing body", i, "from", character.cid
-        self.remove(*body.constraints)
-        self.remove(*body.shapes)
+        self.remove(*[c for c in body.constraints if c in self.constraints])
+        self.remove(*[s for s in body.shapes if s in self.shapes])
         self.remove(body)
