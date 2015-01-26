@@ -1,11 +1,3 @@
-'''
-Created on Dec 29, 2012
-
-@author: Daniel
-'''
-import sys
-sys.path.insert(0,'''../pymunk/trunk''')
-
 from math import pi
 from pymunk import moment_for_box
 
@@ -22,12 +14,14 @@ BODY_THICKNESS = 2
 BODY_FRICTION = 0.5
 
 # body.hp is subtracted based on the force of the bullet impact
-BODY_HP = {"HEAD":200,
-           "TORSO":400,
-           "UPPER_ARM":150,
-           "LOWER_ARM":100,
-           "UPPER_LEG":200,
-           "LOWER_LEG":150}
+BODY_HP = {
+    "HEAD": 200,
+    "TORSO": 400,
+    "UPPER_ARM": 150,
+    "LOWER_ARM": 100,
+    "UPPER_LEG": 200,
+    "LOWER_LEG": 150
+}
 
 HEAD_RADIUS = 4
 TORSO_LENGTH = 15
@@ -77,27 +71,31 @@ STEP_TIME = 1./FPS
 
 # collision group enum
 
-COLLISION_GROUP = {"wall":1,
-                   "character":2,
-                   "bullet":3
-                   }
+COLLISION_GROUP = {
+    "wall": 1,
+    "character": 2,
+    "bullet": 3
+}
 
 # collision type enum
 
-COLLISION_TYPE = {"wall":1,
-                  "character":2,
-                  "bullet":3
-                  }
+COLLISION_TYPE = {
+    "wall": 1,
+    "character": 2,
+    "bullet": 3
+}
 
 # misc. constants
 
 SCREEN_SIZE = 400
 WALL_WIDTH = 20
 CROSSHAIRS_SIZE = 3
-BULLET_PRUNING_VELOCITY = 300 # velocity at which to remove bullets from space
+# velocity at which to remove bullets from space
+BULLET_PRUNING_VELOCITY = 300
 PLAYER_MOVEMENT_SPEED = 250
 ENEMY_MAX_SPEED = 120
 PLAYER_ID = 100
+
 
 def flipy(xy):
     return (xy[0], SCREEN_SIZE-xy[1])
